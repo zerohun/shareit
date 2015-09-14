@@ -32,6 +32,7 @@ Template.shareit_facebook.rendered = ->
         if ShareIt.settings.sites.facebook.appId?
             template.$('.fb-share').click (e) ->
                 e.preventDefault()
+                url = Router.current().data().url;
                 FB.ui {
                     method: 'share'
                     display: 'popup'
