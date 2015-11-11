@@ -1,7 +1,7 @@
 Template.shareit_facebook.rendered = ->
     return unless @data
 
-    @autorun ->
+    @autorun (c)->
         template = Template.instance()        
         data = Template.currentData()
         
@@ -35,9 +35,10 @@ Template.shareit_facebook.rendered = ->
                 url = Router.current().data().url;
                 FB.ui {
                     method: 'share'
-                    display: 'popup'
                     href: url
                 }, (response) ->
+            c.stop(); 
+
         else
             url = encodeURIComponent url
             base = "https://www.facebook.com/sharer/sharer.php"

@@ -1,12 +1,7 @@
 <template name="shareit_twitter">
   <td class="sns-icon-box">
-  <a class="{{#if applyColors}} shareit-twitter-colors{{/if}} tw-share" href="https://twitter.com/intent/tweet?url={{url}}&text={{text}}">
-    <i class="fa fa-twitter{{faClass}} {{faSize}}"></i>{{#if showText}} Share on Twitter{{/if}}
-    </a>
-  </td>
-  <td class="sns-title-box">
-  <a class="tw-share" href="https://twitter.com/intent/tweet?url={{url}}&text={{text}}">
-      Twitter
+  <a class="{{#if applyColors}} shareit-twitter-colors{{/if}} tw-share btn" href="https://twitter.com/intent/tweet?url={{url}}&text={{text}}">
+    <i class="fa fa-twitter{{faClass}} {{faSize}}">&nbsp;Twitter</i>{{#if showText}} Share on Twitter{{/if}}
     </a>
   </td>
 </template>

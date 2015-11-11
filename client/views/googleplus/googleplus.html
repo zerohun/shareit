@@ -1,14 +1,8 @@
 <template name="shareit_googleplus">
   <td class="sns-icon-box">
-  <a class="{{#if applyColors}} shareit-google-colors{{/if}} googleplus-share" href="https://plus.google.com/share?url=#{url}"
+    <a class="{{#if applyColors}} shareit-google-colors{{/if}} googleplus-share btn" href="https://plus.google.com/share?url=#{url}"
       onclick="javascript:window.open(this.href,'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
-    <i class="fa fa-google-plus{{faClass}} {{faSize}}"></i>
-    </a>
-  </td>
-  <td class="sns-title-box">
-    <a class=" googleplus-share" href="https://plus.google.com/share?url=#{url}"
-        onclick="javascript:window.open(this.href,'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
-      Google plus 
+    <i class="fa fa-google-plus{{faClass}} {{faSize}}">&nbsp;Google Plus</i>
     </a>
   </td>
 </template>
