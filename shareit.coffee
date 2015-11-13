@@ -1,84 +1,68 @@
-ShareIt = {
+script_loader = (url, id, d = document) ->
+  unless d.getElementById id
+    fjs = d.getElementsByTagName('script')[0]
+    js = d.createElement 'script'
+    js.async = true
+    js.id = id
+    js.src = url
+    fjs.parentNode.insertBefore js, fjs
+
+
+ShareIt =
   settings:
     autoInit: true
     buttons: 'responsive'
-    sites: 
-      'facebook':
+    sites:
+      facebook:
         'appId': null
-        'version': 'v2.1'
+        'version': 'v2.3'
         'description': ''
-      'twitter':
+        'buttonText': 'Share on Facebook'
+      twitter:
         'description': ''
-      'googleplus':
+        'buttonText': 'Share on Twitter'
+      googleplus:
         'description': ''
-      'pinterest':
+        'buttonText': 'Share on Google+'
+      pinterest:
         'description': ''
-      'instagram':
+        'buttonText': 'Share on Pinterest'
+      instagram:
         'description': ''
-    siteOrder: ['facebook', 'twitter', 'pinterest', 'googleplus', 'instagram']
-    classes: "large btn"
+        'buttonText': 'Share on Instagram'
+    siteOrder: []
+    classes: 'large btn'
     iconOnly: false
     faSize: ''
     faClass: ''
     applyColors: true
 
-  configure: (hash) ->
-    @settings = $.extend(true, @settings, hash)
-  
-  helpers: {
-    classes: () ->
-      ShareIt.settings.classes
-    showText: () ->
-      !ShareIt.settings.iconOnly
-    applyColors: () ->
-      ShareIt.settings.applyColors
-    faSize: () ->
-      ShareIt.settings.faSize
-    faClass: () ->
-      if !!ShareIt.settings.faClass
-      then '-' + ShareIt.settings.faClass
-      else
-        ''
-  }
-}
+  configure: (params) ->
+    $.extend true, @settings, params if params?
 
-@ShareIt = ShareIt
+  helpers:
+    classes: -> ShareIt.settings.classes
+    showText: (text) -> not ShareIt.settings.iconOnly and " #{text}"
+    applyColors: (cssClasses) -> ShareIt.settings.applyColors and " #{cssClasses}"
+    faSize: -> ShareIt.settings.faSize
+    faClass: -> ShareIt.settings.faClass and "-#{ShareIt.settings.faClass}"
+    buttonText: ->
+      facebook: ShareIt.settings.sites.facebook.buttonText
+      twitter: ShareIt.settings.sites.twitter.buttonText
+      googleplus: ShareIt.settings.sites.googleplus.buttonText
+      pinterest: ShareIt.settings.sites.pinterest.buttonText
+      instagram: ShareIt.settings.sites.instagram.buttonText
 
-ShareIt.init = (hash) ->
-  @settings = $.extend(true, @settings, hash)
-    
-  # Twitter
-  window.twttr = do (d = document, s = 'script', id = 'twitter-wjs') ->
-    t = undefined
-    js = undefined
-    fjs = d.getElementsByTagName(s)[0]
-    return  if d.getElementById(id)
-    js = d.createElement(s)
-    js.id = id
-    js.src = "https://platform.twitter.com/widgets.js"
-    fjs.parentNode.insertBefore js, fjs
-    window.twttr or (t =
-      _e: []
-      ready: (f) ->
-        t._e.push f
-    )
+  init: (params) ->
+    @configure params if params?
 
-  # Facebook
-  # silence that annoying complaint
-  $('<div id="fb-root"></div>').appendTo 'body'
-  if ShareIt.settings.autoInit
-    window.fbAsyncInit = ->
-      FB.init(ShareIt.settings.sites.facebook)
-    
-  ((d, s, id) ->
-    js = undefined
-    fjs = d.getElementsByTagName(s)[0]
-    if d.getElementById(id)
-      return
-    js = d.createElement(s)
-    js.id = id
-    js.src = '//connect.facebook.net/en_US/sdk.js'
-    fjs.parentNode.insertBefore js, fjs
-    return
-  ) document, 'script', 'facebook-jssdk'
-  
+    # Twitter    
+    script_loader '//platform.twitter.com/widgets.js', 'twitter-wjs'
+
+    # Facebook
+    if @settings.autoInit and @settings.sites.facebook?
+      window.fbAsyncInit = =>
+        FB.init @settings.sites.facebook
+          
+    $('<div id="fb-root"></div>').appendTo 'body' unless $('#fb-root').get(0)?  
+    script_loader '//connect.facebook.net/en_US/sdk.js', 'facebook-jssdk'

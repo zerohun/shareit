@@ -1,52 +1,57 @@
-Template.shareit_twitter.rendered = ->
-    return unless @data
+Template.shareit_twitter.onRendered ->
+  #return unless @data
 
-    @autorun ->
-        template = Template.instance()
-        data = Template.currentData()
-        $('meta[property^="twitter:"]').remove()
+  @autorun ->
+    return unless Router.current().ready()
+    data = Template.currentData()
+    $('meta[property^="twitter:"]').remove()
+
+    #
+    # Twitter cards
+    #
+    $('<meta>', { property: 'twitter:card', content: 'summary' }).appendTo 'head'
+    # What should go here?
+    #$('<meta>', { property: 'twitter:site', content: '' }).appendTo 'head'
+
+    url = Session.get("posts-show-url") || data.twitter?.url || data.url
+    url = if _.isString(url) and url.length then url else location.origin + location.pathname
+    $('<meta>', { property: 'twitter:url', content: url }).appendTo 'head'
+
+    author = data.twitter?.author || data.author
+    if _.isString(author) and author.length
+      $('<meta>', { property: 'twitter:creator', content: author }).appendTo 'head'
+    else
+      author = ''
       
-        if data.thumbnail
-          if typeof data.thumbnail == "function"
-            img = data.thumbnail()
-          else
-            img = data.thumbnail
-          if img
-            if not /^http(s?):\/\/+/.test(img)
-              img = location.origin + img
-      
-        #
-        # Twitter cards
-        #
-      
-        $('<meta>', { property: 'twitter:card', content: 'summary' }).appendTo 'head'
-        # What should go here?
-        #$('<meta>', { property: 'twitter:site', content: '' }).appendTo 'head'
-      
-        if data.author
-          $('<meta>', { property: 'twitter:creator', content: data.author }).appendTo 'head'
-      
-        description = data.twitter?.description || data.excerpt || data.description || data.summary
-        $('<meta>', { property: 'twitter:url', content: location.origin + location.pathname }).appendTo 'head'
-        $('<meta>', { property: 'twitter:title', content: "#{data.title}" }).appendTo 'head'
-        $('<meta>', { property: 'twitter:description', content: description }).appendTo 'head'
+    title = data.twitter?.title || data.title
+    if _.isString(title) and title.length
+      $('<meta>', { property: 'twitter:title', content: title }).appendTo 'head'
+    else
+      title = ''
+
+    description = data.twitter?.description || data.excerpt || data.description || data.summary
+    if _.isString(description) and description.length
+      $('<meta>', { property: 'twitter:description', content: description }).appendTo 'head'
+    else
+      description = ''
+
+    if data.thumbnail?
+      img = if _.isFunction data.thumbnail then data.thumbnail() else data.thumbnail  
+      if _.isString(img) and img.length
+        img = location.origin + img unless /^http(s?):\/\/+/.test(img)          
         $('<meta>', { property: 'twitter:image', content: img }).appendTo 'head'
-      
-        #
-        # Twitter share button
-        #
-      
-        preferred_url = data.url || location.origin + location.pathname
-        url = encodeURIComponent preferred_url
-      
-        base = "https://twitter.com/intent/tweet"
-        text = encodeURIComponent data.twitter?.title || data.title
-        href = base + "?url=" + url + "&text=" + text
-      
-        if data.author
-          href += "&via=" + data.author
-      
-        template.$(".tw-share").attr "href", href
+      else
+        img = ''
 
+    #
+    # Twitter share button
+    #
+    href = "https://twitter.com/intent/tweet?url=#{encodeURIComponent url}&text=#{encodeURIComponent title}"
 
-Template.shareit_twitter.helpers(ShareIt.helpers)
+    hashtags = data.twitter?.hashtags || data.hashtags
+    href += "&hashtags=#{encodeURIComponent hashtags}" if _.isString(hashtags) and hashtags.length
+    href += "&via=#{encodeURIComponent author}" if author
+      
+    Template.instance().$(".tw-share").attr "href", href
+
+Template.shareit_twitter.helpers ShareIt.helpers
