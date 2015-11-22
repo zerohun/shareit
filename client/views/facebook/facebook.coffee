@@ -48,6 +48,9 @@ Template.shareit_facebook.onRendered ->
 
       if _.isString(img) and img.length
         img = location.origin + img unless /^http(s?):\/\/+/.test(img)
+        paramsArr = location.href.split('?')
+        if paramsArr.length > 1
+          img = img.concat('&' + paramsArr[1])
         $('<meta>', { property: 'og:image', content: img }).appendTo 'head'
       else
         img = ''

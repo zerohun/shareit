@@ -39,6 +39,9 @@ Template.shareit_twitter.onRendered ->
       img = if _.isFunction data.thumbnail then data.thumbnail() else data.thumbnail  
       if _.isString(img) and img.length
         img = location.origin + img unless /^http(s?):\/\/+/.test(img)          
+        paramsArr = location.href.split('?')
+        if paramsArr.length > 1
+          img = img.concat('&' + paramsArr[1])
         $('<meta>', { property: 'twitter:image', content: img }).appendTo 'head'
       else
         img = ''

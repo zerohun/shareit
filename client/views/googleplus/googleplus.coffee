@@ -27,6 +27,9 @@ Template.shareit_googleplus.onRendered ->
     if img
       if not /^http(s?):\/\/+/.test(img)
         img = location.origin + img
+        paramsArr = location.href.split('?')
+        if paramsArr.length > 1
+          img = img.concat('&' + paramsArr[1])
 
     $('<meta>', { itemprop: 'image', content: img }).appendTo 'head'
     #
