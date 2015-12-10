@@ -2,6 +2,7 @@ Template.shareit_googleplus.onRendered ->
   #return unless @data
 
   @autorun ->
+    return unless Router.current().data && typeof Router.current().data  == "function"
     return unless Router.current().ready()
     template = Template.instance()
     data = Template.currentData()

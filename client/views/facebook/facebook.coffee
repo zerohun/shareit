@@ -5,6 +5,7 @@ Template.shareit_facebook.onRendered ->
     Template.instance().$('.fb-share').click handler if _.isFunction handler
 
   @autorun ->    
+    return unless Router.current().data && typeof Router.current().data  == "function"
     return unless Router.current().data()
     data = Template.currentData()
     $('meta[property^="og:"]').remove()
